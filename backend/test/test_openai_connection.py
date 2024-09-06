@@ -1,5 +1,5 @@
 from openai import OpenAI
-client = OpenAI(api_key="sk-proj-4Y7GEJrFTPgHm7ITPK31T3BlbkFJeJtvRCha58LbcDaMMWqb")
+client = OpenAI()
 
 response = client.chat.completions.create(
   model="gpt-4o-mini",
