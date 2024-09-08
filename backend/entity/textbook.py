@@ -1,3 +1,5 @@
+from entity.chapter import Chapter
+
 class Textbook:
     def __init__(self, title, preface, table, chapter):
         """
@@ -15,13 +17,4 @@ class Textbook:
         self.table = table
         self.chapter = chapter
 
-
-    def get_title(self):
-        return self.title
-    
-    def get_preface(self):
-        return self.preface
-    
-    def ger_table(self):
-        return self.table
     

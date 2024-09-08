@@ -6,10 +6,3 @@ class Chapter:
         self.summary = summary
         self.section = section
 
-
-
-
-class Section:
-    def __init__(self, concept, example):
-        self.concept = concept
-        self.example = example
