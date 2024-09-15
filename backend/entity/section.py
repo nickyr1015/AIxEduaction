@@ -1,5 +1,6 @@
 class Section:
-    def __init__(self, name, concept, description, example):
+    def __init__(self, number, name, concept, description, example):
+        self.number = number
         self.name = name
         self.concept = concept
         self.description = description
