@@ -1,14 +1,7 @@
 from entity.textbook import Textbook
 
 class Course:
-    def __init__(self, textbook, description):
-        """
-        Properties (name: type):
-        ---
-        textbook: Textbook
-        description: str
-        
-        """
-
-        self.textbook = textbook
+    def __init__(self, title = None, description = None, textbook = None):
+        self.title = title
         self.description = description
+        self.textbook = textbook
