@@ -1,11 +1,18 @@
 from entity.chapter import Chapter
 
 class Textbook:
-    def __init__(self, course_title, title, preface, table, chapter):
-        self.course_title = course_title
+    def __init__(self, course_id=None, textbook_id=None, title=None, preface=None, table=None):
+        self.course_id = course_id
+        self.textbook_id = textbook_id
         self.title = title
         self.preface = preface
         self.table = table
-        self.chapter = chapter
 
-    
+    def to_dict(self):
+        return {
+            'course_id': self.course_id,
+            'textbook_id': self.textbook_id,
+            'title': self.title,
+            'preface': self.preface,
+            'table': self.table,
+        }

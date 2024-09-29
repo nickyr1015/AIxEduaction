@@ -1,7 +1,14 @@
 from entity.textbook import Textbook
 
 class Course:
-    def __init__(self, title = None, description = None, textbook = None):
+    def __init__(self, course_id=None, title=None, description=None, textbook=None):
+        self.course_id = course_id
         self.title = title
         self.description = description
-        self.textbook = textbook
+
+    def to_dict(self):
+        return {
+            'course_id': self.course_id,
+            'title': self.title,
+            'description': self.description
+        }
