@@ -1,26 +1,14 @@
 from entity.textbook import Textbook
 
 class Course:
-    def __init__(self, textbook, description):
-        """
-        Properties (name: type):
-        ---
-        textbook: Textbook
-        description: str
-        
-        """
-
-        self.textbook = textbook
+    def __init__(self, course_id=None, title=None, description=None, textbook=None):
+        self.course_id = course_id
+        self.title = title
         self.description = description
 
-    def get_textbook(self):
-        return self.textbook
-    
-    def get_description(self):
-        return self.description
-    
-    def set_textbook(self, new_textbook):
-        self.textbook = new_textbook
-
-    def set_description(self, new_description):
-        self.description = new_description
+    def to_dict(self):
+        return {
+            'course_id': self.course_id,
+            'title': self.title,
+            'description': self.description
+        }
