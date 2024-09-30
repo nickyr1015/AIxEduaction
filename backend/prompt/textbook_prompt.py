@@ -1,20 +1,20 @@
-def get_textbook_title(course_name):
+def get_textbook_title(textbook_name):
     prompt = f"""
-{course_name}
+{textbook_name}
 """
     return prompt
 
 
-def get_textbook_preface(course_name):
+def get_textbook_preface(textbook_name):
     prompt = f"""
-{course_name}
+{textbook_name}
 """
     return prompt
 
 
-def get_textbook_table(course_name):
+def get_textbook_table(textbook_name):
     prompt = f"""
-{course_name}
+{textbook_name}
 """
     return prompt
 

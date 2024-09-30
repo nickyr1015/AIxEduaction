@@ -1,31 +1,29 @@
 import React, { useEffect, useState } from 'react';
 
 const CoursePage = () => {
-  const [courses, setCourses] = useState([]); // State to hold the course data
-  const [loading, setLoading] = useState(true); // State to manage loading state
-  const [error, setError] = useState(null); // State to manage error messages
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch courses data from the API when the component mounts
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('http://localhost:8000/courses'); // Adjust the URL as necessary
+        const response = await fetch('http://localhost:8000/courses');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        setCourses(data); // Set the course data in state
+        setCourses(data);
       } catch (err) {
-        setError(err.message); // Set error message in state
+        setError(err.message);
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
 
-    fetchCourses(); // Call the fetch function
-  }, []); // Empty dependency array means this effect runs once on mount
+    fetchCourses();
+  }, []);
 
-  // Render loading, error, or course list
   if (loading) {
     return <div>Loading courses...</div>;
   }
