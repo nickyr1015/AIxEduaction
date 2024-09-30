@@ -8,6 +8,7 @@ from entity.course import Course
 from entity.chapter import Chapter
 from entity.section import Section
 from entity.textbook import Textbook
+from util.generate_id import generate_id
 
 
 class DatabaseConnection:
@@ -22,10 +23,19 @@ class DatabaseConnection:
 
     """
     course database manipulation:
+
     load_course: return dataframe from csv
-    get_course_by_id(id): return Course object according to id 
     save_course(df): save dataframe to csv
-    add_course(course): add a course and save
+
+    get_course_by_id(id): return Course object according to id 
+    add_course(course): add a Course object and save
+    remove_course_by_id(id): remove a Course object by id
+    update_course_by_id(id, Course property): update a Course object by id
+    get_course_all()
+    remove_course_all(): 
+    get_course_id_all(): return a list of course_id
+
+    -----------------------------------------------------------
     
     """
 
@@ -103,17 +113,15 @@ class DatabaseConnection:
         print(f"Course with ID {course_id} has been removed successfully.")
         return True
     
-    def update_course_by_id(self, course_id, title=None, description=None):
+    def update_course_by_id(self, course_id, course):
         """Update a course's title and/or description by its course_id."""
         df = self.load_course()
 
         # Check if the course exists
         if df['course_id'].astype(int).eq(course_id).any():
             # Update the relevant fields
-            if title is not None:
-                df.loc[df['course_id'] == course_id, 'title'] = title
-            if description is not None:
-                df.loc[df['course_id'] == course_id, 'description'] = description
+            df.loc[df['course_id'] == course_id, 'title'] = course.title
+            df.loc[df['course_id'] == course_id, 'description'] = course.description
             
             self.save_course(df)
             print(f"Course with ID {course_id} updated successfully.")
@@ -136,29 +144,55 @@ class DatabaseConnection:
             courses.append(course)
 
         return courses
+    
+    def remove_course_all(self):
+        """Remove all courses from the CSV file."""
+        df = self.load_course()
+
+        if df.empty:
+            print("No courses to remove. The file is already empty.")
+            return False
+
+        # Create an empty DataFrame with the same columns
+        empty_df = pd.DataFrame(columns=['course_id', 'title', 'description'])
+        
+        # Save the empty DataFrame back to the CSV file
+        self.save_course(empty_df)
+        print("All courses have been removed successfully.")
+        return True
+    
+    def get_course_id_all(self):
+        """Retrieve all course IDs from the CSV file as a list."""
+        df = self.load_course()
+        
+        if df.empty:
+            print("Warning: No courses found. Returning an empty list.")
+            return []
+
+        course_ids = df['course_id'].tolist()
+        return course_ids
+
 
 if __name__ == "__main__":
     db_conn = DatabaseConnection()
-    # new_course = Course(course_id="3", title="Data Structure", description="Introduction to Data Structure")
-    # db_conn.add_course(new_course)
-    # new_course = Course(course_id="4", title="Data Structure", description="Intermediate Data Structure")
-    # db_conn.add_course(new_course)
-    # new_course = Course(course_id="5", title="Data Structure", description="Complex Algorithms")
-    # db_conn.add_course(new_course)
 
-    # course = db_conn.get_course_by_id(3)
-    # print(course.course_id)
-    # print(course.title)
-    # print(course.description)
-    # db_conn.remove_course_by_id(3)
-    # db_conn.update_course_by_id(course_id=2, title="Algorithms3", description="Advance Algorithms")
+    db_conn.remove_course_all()
+
+    new_course = Course(course_id=generate_id(), title="Data Structure", description="Introduction to Data Structure")
+    db_conn.add_course(new_course)
+    new_course = Course(course_id=generate_id(), title="Data Structure", description="Intermediate Data Structure")
+    db_conn.add_course(new_course)
+    new_course = Course(course_id=generate_id(), title="Data Structure", description="Complex Algorithms")
+    db_conn.add_course(new_course)
+    new_course = Course(course_id=generate_id(), title="Deep Learning", description="Computer Vision, Natural Language Processing")
+    db_conn.add_course(new_course)
+    new_course = Course(course_id=generate_id(), title="Machine Learning", description="Unsupervised Learning")
+    db_conn.add_course(new_course)
+
     course = db_conn.get_course_all()
     course = [c.to_dict() for c in course]
+
     print("Get All Course Information")
-    print(course)
-    # try:
-    #     all_courses = db_conn.load_course()
-    #     print(all_courses)
-    # except FileNotFoundError as e:
-    #     print(e)
+    for c in course:
+        print(c)
 
