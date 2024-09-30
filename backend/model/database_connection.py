@@ -3,6 +3,7 @@ import sys
 import pandas as pd
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
+from config.configuration import get_config
 from entity.course import Course
 from entity.chapter import Chapter
 from entity.section import Section
@@ -11,7 +12,8 @@ from entity.textbook import Textbook
 
 class DatabaseConnection:
     def __init__(self):
-        self.base_dir = "/Users/mingyangli/Desktop/AIxEducation/AIxProject" + "/backend/data"
+
+        self.base_dir = get_config()["base_dir"] + "/backend/data/database"
         self.course_db = self.base_dir + "/course.csv"
         self.textbook_db = self.base_dir + "/textbook.csv"
         self.chapter_db = self.base_dir + "/chapter.csv"
@@ -154,8 +156,6 @@ if __name__ == "__main__":
     course = [c.to_dict() for c in course]
     print("Get All Course Information")
     print(course)
-    for c in course:
-        print()
     # try:
     #     all_courses = db_conn.load_course()
     #     print(all_courses)

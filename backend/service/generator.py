@@ -4,6 +4,7 @@ import sys
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 from config.configuration import get_config
+from util.extract_table_of_content import extract_table_of_content
 config = get_config()
 client = OpenAI(api_key=config['api_key'])
 
@@ -16,4 +17,6 @@ response = client.chat.completions.create(
 )
 
 message = response.choices[0].message.content
-print(message)
+table_of_content = extract_table_of_content(message)
+for chapter in table_of_content:
+    print(chapter)
