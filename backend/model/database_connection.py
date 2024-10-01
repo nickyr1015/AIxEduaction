@@ -13,7 +13,6 @@ from util.generate_id import generate_id
 
 class DatabaseConnection:
     def __init__(self):
-
         self.base_dir = get_config()["base_dir"] + "/backend/data/database"
         self.course_db = self.base_dir + "/course.csv"
         self.textbook_db = self.base_dir + "/textbook.csv"
