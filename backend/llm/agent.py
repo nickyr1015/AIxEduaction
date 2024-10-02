@@ -30,3 +30,6 @@ class Agent:
 
     def add_context(self, context):
         self.context = context
+
+    def clear_context(self):
+        self.context = None

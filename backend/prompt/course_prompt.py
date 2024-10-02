@@ -12,14 +12,3 @@ I want to get a textbook syllabus for the following course:
     return prompt
 
 
-
-
-# Test 
-def main():
-    course_name = "deep learning"
-    prompt = get_course_syllabus(course_name)
-    print(prompt)
-
-
-if __name__ == "__main__":
-    main()
