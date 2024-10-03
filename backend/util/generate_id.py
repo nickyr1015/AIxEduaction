@@ -1,4 +1,4 @@
 import random
 
 def generate_id():
-    return str(random.randint(1, int(1e7)))
+    return random.randint(1, int(1e7))

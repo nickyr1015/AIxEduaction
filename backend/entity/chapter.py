@@ -16,6 +16,5 @@ class Chapter:
             'number': self.number,
             'title': self.title,
             'objective': self.objective,
-            'section': self.section,
             'summary': self.summary
         }
