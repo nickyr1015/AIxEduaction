@@ -7,3 +7,12 @@ def extract_table_of_content(input_string):
     contents_list = ast.literal_eval(list_str)
     
     return contents_list
+
+
+def list_to_string(lst):
+    """Convert a simple Python list (e.g., strings/numbers) into a string."""
+    return ','.join(map(str, lst))
+
+def string_to_list(s):
+    """Convert a string back into a simple Python list (e.g., strings/numbers)."""
+    return s.split(',')

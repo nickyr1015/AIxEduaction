@@ -8,157 +8,259 @@ from entity.course import Course
 from entity.chapter import Chapter
 from entity.section import Section
 from entity.textbook import Textbook
-
+from util.generate_id import generate_id
+from model.course_manager import CourseManager
+from model.textbook_manager import TextbookManager
+from model.chapter_manager import ChapterManager
+from model.section_manager import SectionManager
 
 class DatabaseConnection:
     def __init__(self):
-
         self.base_dir = get_config()["base_dir"] + "/backend/data/database"
         self.course_db = self.base_dir + "/course.csv"
         self.textbook_db = self.base_dir + "/textbook.csv"
         self.chapter_db = self.base_dir + "/chapter.csv"
         self.section_db = self.base_dir + "/section.csv"
 
+        self.course_manager = CourseManager(self.course_db)
+        self.textbook_manager = TextbookManager(self.textbook_db)
+        self.chapter_manager = ChapterManager(self.chapter_db)
+        self.section_manager = SectionManager(self.section_db)
+
 
     """
     course database manipulation:
+
     load_course: return dataframe from csv
-    get_course_by_id(id): return Course object according to id 
     save_course(df): save dataframe to csv
-    add_course(course): add a course and save
+
+    get_course_all()
+    get_course_by_id(id): return Course object according to id 
+    get_course_id_all(): return a list of course_id
+
+    add_course(course): add a Course object and save
+    update_course_by_id(id, Course property): update a Course object by id
+
+    remove_course_all(): 
+    remove_course_by_id(id): remove a Course object by id
     
     """
 
     def load_course(self):
         """Load the courses from the CSV file into a pandas DataFrame."""
-        if os.path.exists(self.course_db):
-            df = pd.read_csv(self.course_db)
-            if df.empty:
-                print("Warning: The CSV file is empty. Returning an empty DataFrame.")
-                return pd.DataFrame(columns=['course_id', 'title', 'description'])
-            return df
-        else:
-            return pd.DataFrame(columns=['course_id', 'title', 'description'])
+        return self.course_manager.load_course()
+
+    def save_course(self, df):
+        """Save the courses DataFrame to the CSV file."""
+        self.course_manager.save_course(df)
 
     def get_course_by_id(self, course_id):
         """Get a specific course by its course_id."""
-        df = self.load_course()
-        course_row = df[df['course_id'] == course_id]
-        
-        if course_row.empty:
-            return None  # Return None if course not found
-        else:
-            return Course(course_id = course_row['course_id'].values[0],
-                          title = course_row['title'].values[0],
-                          description = course_row['description'].values[0])
-        
-    def save_course(self, df):
-        """Save the courses DataFrame to the CSV file."""
-        df.to_csv(self.course_db, index=False)
-        
-    def add_course(self, course):
-        """Add a course to the DataFrame and save to the CSV file if it does not already exist."""
-        df = self.load_course()
-
-        if df.empty:
-            df = pd.DataFrame(columns=['course_id', 'title', 'description'])
-
-        if df['course_id'].astype(int).eq(course.course_id).any():
-            print(f"Course with ID {course.course_id} already exists.")
-            return False
-
-        # Create a new DataFrame for the new course
-        new_course_row = pd.DataFrame({
-            'course_id': [course.course_id],
-            'title': [course.title],
-            'description': [course.description],
-        })
-
-        # Append the new course to the existing DataFrame
-        df = pd.concat([df, new_course_row], ignore_index=True)
-
-        # Save the updated DataFrame back to the CSV
-        self.save_course(df)
-        print(f"Course with ID {course.course_id} added successfully.")
-        return True
-    
-    def remove_course_by_id(self, course_id):
-        """Remove a course by its course_id and update the CSV file."""
-        df = self.load_course()
-
-        if df.empty:
-            print(f"No courses to remove. The file {self.course_db} is empty.")
-            return False
-
-        # Check if the course with the given ID exists
-        if not df['course_id'].astype(int).eq(course_id).any():
-            print(f"Course with ID {course_id} does not exist.")
-            return False
-
-        # Remove the course from the DataFrame
-        df = df[df['course_id'] != course_id]
-
-        # Save the updated DataFrame back to the CSV
-        self.save_course(df)
-        print(f"Course with ID {course_id} has been removed successfully.")
-        return True
-    
-    def update_course_by_id(self, course_id, title=None, description=None):
-        """Update a course's title and/or description by its course_id."""
-        df = self.load_course()
-
-        # Check if the course exists
-        if df['course_id'].astype(int).eq(course_id).any():
-            # Update the relevant fields
-            if title is not None:
-                df.loc[df['course_id'] == course_id, 'title'] = title
-            if description is not None:
-                df.loc[df['course_id'] == course_id, 'description'] = description
-            
-            self.save_course(df)
-            print(f"Course with ID {course_id} updated successfully.")
-            return True
-        else:
-            print(f"No course with ID {course_id} found.")
-            return False
+        return self.course_manager.get_course_by_id(course_id)
 
     def get_course_all(self):
         """Retrieve all courses from the CSV file as a list of Course objects."""
-        df = self.load_course()
-        courses = []
+        return self.course_manager.get_course_all()
 
-        for _, row in df.iterrows():
-            course = Course(
-                course_id=row['course_id'],
-                title=row['title'],
-                description=row['description']
-            )
-            courses.append(course)
+    def get_course_id_all(self):
+        """Retrieve all course IDs from the CSV file as a list."""
+        return self.course_manager.get_course_id_all()
 
-        return courses
+    def add_course(self, course):
+        """Add a course to the DataFrame and save to the CSV file if it does not already exist."""
+        return self.course_manager.add_course(course)
 
-if __name__ == "__main__":
-    db_conn = DatabaseConnection()
-    # new_course = Course(course_id="3", title="Data Structure", description="Introduction to Data Structure")
-    # db_conn.add_course(new_course)
-    # new_course = Course(course_id="4", title="Data Structure", description="Intermediate Data Structure")
-    # db_conn.add_course(new_course)
-    # new_course = Course(course_id="5", title="Data Structure", description="Complex Algorithms")
-    # db_conn.add_course(new_course)
+    def remove_course_by_id(self, course_id):
+        """Remove a course by its course_id and update the CSV file."""
+        return self.course_manager.remove_course_by_id(course_id)
 
-    # course = db_conn.get_course_by_id(3)
-    # print(course.course_id)
-    # print(course.title)
-    # print(course.description)
-    # db_conn.remove_course_by_id(3)
-    # db_conn.update_course_by_id(course_id=2, title="Algorithms3", description="Advance Algorithms")
-    course = db_conn.get_course_all()
-    course = [c.to_dict() for c in course]
-    print("Get All Course Information")
-    print(course)
-    # try:
-    #     all_courses = db_conn.load_course()
-    #     print(all_courses)
-    # except FileNotFoundError as e:
-    #     print(e)
+    def update_course_by_id(self, course_id, course):
+        """Update a course's title and/or description by its course_id."""
+        return self.course_manager.update_course_by_id(course_id, course)
 
+    def remove_course_all(self):
+        """Remove all courses from the CSV file."""
+        return self.course_manager.remove_course_all()
+
+
+    
+    """
+    textbook database manipulation:
+
+    load_textbook: return dataframe from csv
+    save_textbook(df): save dataframe to csv
+
+    get_textbook_all()
+    get_textbook_by_id(course_id, textbook_id): return Textbook object by course_id and textbook_id 
+    get_textbook_all_by_id(course_id): return all textbooks in a course by course_id
+    get_textbook_id_all_by_id(course_id): return a list of textbook_id by a course_id
+
+    add_textbook(textbook): add a Textbook object and save
+    update_textbook_by_id(course_id, textbook_id, new_textbook): update a Textbook object by id
+    
+    remove_textbook_all(): 
+    remove_textbook_all_by_id(course_id)
+    remove_textbook_by_id(course_id, textbook_id): remove a Textbook object by id
+    
+    """
+
+    def get_textbook_by_id(self, course_id, textbook_id):
+        """Get a specific textbook by its course_id and textbook_id."""
+        return self.textbook_manager.get_textbook_by_id(course_id, textbook_id)
+
+    def get_textbook_all_by_id(self, course_id):
+        """Retrieve all textbooks for a specific course_id as a list of Textbook objects."""
+        return self.textbook_manager.get_textbook_all_by_course_id(course_id)
+
+    def get_textbook_all(self):
+        """Retrieve all textbooks from the CSV file as a list of dictionaries."""
+        return self.textbook_manager.get_textbook_all()
+
+    def get_textbook_id_all_by_course_id(self, course_id):
+        """Retrieve all textbook IDs for a specific course_id."""
+        return self.textbook_manager.get_textbook_id_all_by_course_id(course_id)
+
+    def add_textbook(self, textbook):
+        """Add a textbook to the DataFrame and save to the CSV file if it does not already exist."""
+        return self.textbook_manager.add_textbook(textbook)
+
+    def remove_textbook_all_by_id(self, course_id):
+        """Remove all textbooks for a specific course_id and update the CSV file."""
+        return self.textbook_manager.remove_textbook_all_by_course_id(course_id)
+
+    def remove_textbook_by_id(self, course_id, textbook_id):
+        """Remove a textbook by its course_id and textbook_id and update the CSV file."""
+        return self.textbook_manager.remove_textbook_by_id(course_id, textbook_id)
+
+    def remove_textbook_all(self):
+        """Remove all textbooks from the CSV file."""
+        return self.textbook_manager.remove_textbook_all()
+
+    def update_textbook_by_id(self, course_id, textbook_id, new_textbook):
+        """Update the details of a specific textbook by course_id and textbook_id."""
+        return self.textbook_manager.update_textbook_by_id(course_id, textbook_id, new_textbook)
+    
+
+
+
+    """
+    chapter database manipulation:
+
+    load_chapter: return dataframe from csv
+    save_chapter(df): save dataframe to csv
+
+    get_chapter_all()
+    get_chapter_by_id(course_id, textbook_id, chapter_id): return Chapter object by course_id and textbook_id 
+    get_chapter_all_by_course_textbook_id(course_id, textbook_id): return all chapters in a textbook by course_id and textbook_id
+    get_chapter_id_all(): return a list of chapter_id
+
+    add_chapter(textbook): add a Course object and save
+    update_chapter_by_id(course_id, textbook_id, chapter_id): update a Course object by id
+    
+    remove_chapter_all(): 
+    remove_chapter_all_by_course_textbook_id(course_id, textbook_id)
+    remove_chapter_by_id(course_id, textbook_id, chapter_id): remove a Course object by id
+    
+    """
+
+    def load_chapter(self):
+        """Delegate the loading of chapters to the chapter manager."""
+        return self.chapter_manager.load_chapter()
+
+    def save_chapter(self, df):
+        """Delegate saving the chapters to the chapter manager."""
+        self.chapter_manager.save_chapter(df)
+
+    def get_chapter_all(self):
+        """Delegate retrieval of all chapters to the chapter manager."""
+        return self.chapter_manager.get_chapter_all()
+
+    def get_chapter_by_id(self, course_id, textbook_id, chapter_id):
+        """Delegate retrieval of a chapter by its course_id, textbook_id, and chapter_id to the chapter manager."""
+        return self.chapter_manager.get_chapter_by_id(course_id, textbook_id, chapter_id)
+
+    def get_chapter_all_by_course_textbook_id(self, course_id, textbook_id):
+        """Delegate retrieval of all chapters by course_id and textbook_id to the chapter manager."""
+        return self.chapter_manager.get_chapter_all_by_course_textbook_id(course_id, textbook_id)
+
+    def get_chapter_id_all(self):
+        """Delegate retrieval of all chapter IDs to the chapter manager."""
+        return self.chapter_manager.get_chapter_id_all()
+
+    def add_chapter(self, chapter):
+        """Delegate adding a chapter to the chapter manager."""
+        return self.chapter_manager.add_chapter(chapter)
+
+    def update_chapter_by_id(self, course_id, textbook_id, chapter_id, updated_chapter):
+        """Delegate updating a chapter by course_id, textbook_id, and chapter_id to the chapter manager."""
+        return self.chapter_manager.update_chapter_by_id(course_id, textbook_id, chapter_id, updated_chapter)
+
+    def remove_chapter_all(self):
+        """Delegate removal of all chapters to the chapter manager."""
+        return self.chapter_manager.remove_chapter_all()
+
+    def remove_chapter_all_by_course_textbook_id(self, course_id, textbook_id):
+        """Delegate removal of all chapters by course_id and textbook_id to the chapter manager."""
+        return self.chapter_manager.remove_chapter_all_by_course_textbook_id(course_id, textbook_id)
+
+    def remove_chapter_by_id(self, course_id, textbook_id, chapter_id):
+        """Delegate removal of a chapter by course_id, textbook_id, and chapter_id to the chapter manager."""
+        return self.chapter_manager.remove_chapter_by_id(course_id, textbook_id, chapter_id)
+    
+
+    """
+    section database manipulation:
+
+    load_section(): return dataframe from csv
+    save_section(df): save dataframe to csv
+
+    get_section_all()
+    get_section_by_id(course_id, textbook_id, chapter_id, section_id): return Section object according to id 
+    get_section_id_all_by_id(course_id, textbook_id, chapter_id): return a list of section_id
+
+    add_section(section): add a Section object and save
+    update_section_by_id(course_id, textbook_id, chapter_id, section_id, section): update a Section object by id
+
+    remove_section_all(): 
+    remove_section_by_id(course_id, textbook_id, chapter_id, section_id): remove a Section object by id
+    
+    """
+
+    def load_section(self):
+        """Delegate loading sections to the section manager."""
+        return self.section_manager.load_section()
+
+    def save_section(self, df):
+        """Delegate saving sections to the section manager."""
+        self.section_manager.save_section(df)
+
+    def get_section_all(self):
+        """Delegate retrieval of all sections to the section manager."""
+        return self.section_manager.get_section_all()
+
+    def get_section_by_id(self, course_id, textbook_id, chapter_id, section_id):
+        """Delegate retrieval of a section by its course_id, textbook_id, chapter_id, and section_id to the section manager."""
+        return self.section_manager.get_section_by_id(course_id, textbook_id, chapter_id, section_id)
+
+    def get_section_id_all_by_id(self, course_id, textbook_id, chapter_id):
+        """Delegate retrieval of all section_ids by course_id, textbook_id, and chapter_id to the section manager."""
+        return self.section_manager.get_section_id_all_by_id(course_id, textbook_id, chapter_id)
+
+    def add_section(self, section):
+        """Delegate adding a section to the section manager."""
+        return self.section_manager.add_section(section)
+
+    def update_section_by_id(self, course_id, textbook_id, chapter_id, section_id, section):
+        """Delegate updating a section by course_id, textbook_id, chapter_id, and section_id to the section manager."""
+        return self.section_manager.update_section_by_id(course_id, textbook_id, chapter_id, section_id, section)
+
+    def remove_section_all(self):
+        """Delegate removal of all sections to the section manager."""
+        return self.section_manager.remove_section_all()
+
+    def remove_section_by_id(self, course_id, textbook_id, chapter_id, section_id):
+        """Delegate removal of a section by course_id, textbook_id, chapter_id, and section_id to the section manager."""
+        return self.section_manager.remove_section_by_id(course_id, textbook_id, chapter_id, section_id)
+
+
+    

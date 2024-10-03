@@ -1,4 +1,8 @@
-from entity.chapter import Chapter
+import os
+import sys
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(parent_dir)
+from util.extract_table_of_content import *
 
 class Textbook:
     def __init__(self, course_id=None, textbook_id=None, title=None, preface=None, table=None):
@@ -16,3 +20,20 @@ class Textbook:
             'preface': self.preface,
             'table': self.table,
         }
+    
+    def stringify(self):
+        string = ""
+
+        string += self.title + "\n"
+        string += "course_id:" + self.course_id + "\n"
+        string += "textbook_id: " + self.textbook_id + "\n"
+        string += "---------------------------\n\n"
+        string += self.preface + "\n"
+        string += "---------------------------\n\n"
+        string += "Table of Content:\n"
+        
+        table = string_to_list(self.table)
+        for chapter in table:
+            string += chapter + "\n"
+        
+        return string
