@@ -14,6 +14,12 @@ from llm.agent import Agent
 if __name__ == "__main__":
     client = OpenAI(api_key=get_config()["api_key"])
     agent = Agent(agent=client)
+
+    # Course Prompt
+
+    
+
+    # Textbook Prompt
     context = "You are a textbook."
     agent.add_context(context)
 
