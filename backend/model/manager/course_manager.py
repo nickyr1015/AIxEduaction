@@ -162,18 +162,3 @@ class CourseManager:
         print("All courses have been removed successfully.")
         return True
     
-
-    def load_textbook(self):
-        """Load the textbooks from the CSV file into a pandas DataFrame."""
-        if os.path.exists(self.textbook_db):
-            df = pd.read_csv(self.textbook_db)
-            if df.empty:
-                print("Warning: The CSV file is empty. Returning an empty DataFrame.")
-                return pd.DataFrame(columns=['course_id', 'textbook_id', 'title', 'preface', 'table'])
-            return df
-        else:
-            return pd.DataFrame(columns=['course_id', 'textbook_id', 'title', 'preface', 'table'])
-
-    def save_textbook(self, df):
-        """Save the textbooks DataFrame to the CSV file."""
-        df.to_csv(self.textbook_db, index=False)

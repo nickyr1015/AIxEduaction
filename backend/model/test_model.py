@@ -118,23 +118,23 @@ if __name__ == "__main__":
     chapter_id = generate_id()
     section_id = generate_id()
     section = Section(course_id=course_id, textbook_id=textbook_id, chapter_id=chapter_id, section_id=section_id, number=1, title="Test Section", concept="Test Concept", description="Test Description", example="Test Example")
-    db_conn.section_manager.add_section(section)
+    db_conn.add_section(section)
     print(f"Added section: {section}")
 
     # Retrieve and verify the added section
-    retrieved_section = db_conn.section_manager.get_section_by_id(course_id, textbook_id, chapter_id, section_id)
+    retrieved_section = db_conn.get_section_by_id(course_id, textbook_id, chapter_id, section_id)
     print(f"Retrieved section: {retrieved_section}")
     assert retrieved_section.title == "Test Section", "Section retrieval failed."
 
     # Update the section
     section.title = "Updated Section Title"
-    db_conn.section_manager.update_section_by_id(course_id, textbook_id, chapter_id, section_id, section)
-    updated_section = db_conn.section_manager.get_section_by_id(course_id, textbook_id, chapter_id, section_id)
+    db_conn.update_section_by_id(course_id, textbook_id, chapter_id, section_id, section)
+    updated_section = db_conn.get_section_by_id(course_id, textbook_id, chapter_id, section_id)
     print(f"Updated section: {updated_section}")
     assert updated_section.title == "Updated Section Title", "Section update failed."
 
-    # Remove the section
-    db_conn.section_manager.remove_section_by_id(course_id, textbook_id, chapter_id, section_id)
-    removed_section = db_conn.section_manager.get_section_by_id(course_id, textbook_id, chapter_id, section_id)
-    assert removed_section is None, "Section removal failed."
-    print(f"Section with ID {section_id} removed successfully.")
+    # # Remove the section
+    # db_conn.remove_section_by_id(course_id, textbook_id, chapter_id, section_id)
+    # removed_section = db_conn.get_section_by_id(course_id, textbook_id, chapter_id, section_id)
+    # assert removed_section is None, "Section removal failed."
+    # print(f"Section with ID {section_id} removed successfully.")

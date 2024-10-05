@@ -9,10 +9,10 @@ from entity.chapter import Chapter
 from entity.section import Section
 from entity.textbook import Textbook
 from util.generate_id import generate_id
-from model.course_manager import CourseManager
-from model.textbook_manager import TextbookManager
-from model.chapter_manager import ChapterManager
-from model.section_manager import SectionManager
+from backend.model.manager.course_manager import CourseManager
+from backend.model.manager.textbook_manager import TextbookManager
+from backend.model.manager.chapter_manager import ChapterManager
+from backend.model.manager.section_manager import SectionManager
 
 class DatabaseConnection:
     def __init__(self):
