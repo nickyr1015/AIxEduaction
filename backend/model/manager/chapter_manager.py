@@ -64,7 +64,7 @@ class ChapterManager:
                 summary=chapter_row['summary'].values[0]
             )
 
-    def get_chapter_all_by_course_textbook_id(self, course_id, textbook_id):
+    def get_chapter_all_by_id(self, course_id, textbook_id):
         """Retrieve all chapters for a specific course_id and textbook_id."""
         df = self.load_chapter()
         filtered_chapters = df[(df['course_id'] == course_id) & (df['textbook_id'] == textbook_id)]
@@ -87,15 +87,22 @@ class ChapterManager:
 
         return chapters
 
-    def get_chapter_id_all(self):
-        """Retrieve all chapter IDs from the CSV file."""
+    def get_chapter_id_all_by_id(self, course_id, textbook_id):
+        """Retrieve all chapter IDs for a specific course and textbook from the CSV file."""
         df = self.load_chapter()
 
         if df.empty:
             print("Warning: No chapters found. Returning an empty list.")
             return []
 
-        chapter_ids = df['chapter_id'].tolist()
+        # Filter the dataframe by course_id and textbook_id
+        filtered_df = df[(df['course_id'] == course_id) & (df['textbook_id'] == textbook_id)]
+
+        if filtered_df.empty:
+            print(f"Warning: No chapters found for course_id={course_id} and textbook_id={textbook_id}. Returning an empty list.")
+            return []
+
+        chapter_ids = filtered_df['chapter_id'].tolist()
         return chapter_ids
 
     def add_chapter(self, chapter):

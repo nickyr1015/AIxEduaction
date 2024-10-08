@@ -40,7 +40,7 @@ class TextbookManager:
                 table= textbook_row['table'].values[0]
             )
 
-    def get_textbook_all_by_course_id(self, course_id):
+    def get_textbook_all_by_id(self, course_id):
         """Retrieve all textbooks for a specific course_id as a list of Textbook objects."""
         df = self.load_textbook()
         course_textbooks = df[df['course_id'] == course_id]
@@ -78,7 +78,7 @@ class TextbookManager:
 
         return textbooks
     
-    def get_textbook_id_all_by_course_id(self, course_id):
+    def get_textbook_id_all_by_id(self, course_id):
         """Retrieve all textbook IDs for a specific course_id."""
         df = self.load_textbook()
 
