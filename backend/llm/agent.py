@@ -3,21 +3,18 @@ import os
 import sys
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
-from config.configuration import get_config
-config = get_config()
-client = OpenAI(api_key=config['api_key'])
 
 
 class Agent:
     def __init__(self, agent):
         self.agent = agent
-        self.context = None
+        self.context = []
 
     def call(self, query):
         messages = []
 
-        if self.context != None:
-            messages.append({"role": "system", "content": self.context})
+        for context in self.context:
+            messages.append(context)
 
         messages.append({"role": "user", "content": query})
 
@@ -29,7 +26,7 @@ class Agent:
 
 
     def add_context(self, context):
-        self.context = context
+        self.context.append({"role": "system", "content": context})
 
     def clear_context(self):
-        self.context = None
+        self.context = []

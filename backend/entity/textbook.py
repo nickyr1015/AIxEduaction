@@ -20,20 +20,3 @@ class Textbook:
             'preface': self.preface,
             'table': self.table,
         }
-    
-    def stringify(self):
-        string = ""
-
-        string += self.title + "\n"
-        string += "course_id:" + self.course_id + "\n"
-        string += "textbook_id: " + self.textbook_id + "\n"
-        string += "---------------------------\n\n"
-        string += self.preface + "\n"
-        string += "---------------------------\n\n"
-        string += "Table of Content:\n"
-        
-        table = string_to_list(self.table)
-        for chapter in table:
-            string += chapter + "\n"
-        
-        return string

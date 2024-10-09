@@ -23,17 +23,3 @@ class TextbookGenerator:
         table_of_content = agent.call(prompt)
         return table_of_content
     
-    def generate_textbook(self, agent, course_name, user_requirement=None):
-        context = "Your are a textbook."
-        agent.add_context(context)
-        if user_requirement != None:
-            agent.add_context(user_requirement)
-        
-        textbook_title = self.generate_textbook_title(course_name=course_name)
-        textbook_table = self.generate_textbook_table(course_name=course_name)
-        textbook_preface = self.generate_textbook_preface(textbook_title=textbook_title, textbook_table=textbook_table)
-
-        agent.clear_context()
-
-        return textbook_title, textbook_table, textbook_preface
-    

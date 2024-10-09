@@ -15,28 +15,27 @@ from model.database_connection import DatabaseConnection
 
 if __name__ == "__main__":
     db_conn = DatabaseConnection()
-
     """
     test course manipulation
     """
-    # # Create a course
-    # course_id = generate_id()
-    # print(type(course_id))
-    # course = Course(course_id=course_id, title="Test Course", description="Test Description")
-    # db_conn.add_course(course)
-    # print(f"Added course: {course.to_dict()}")
+    ## Create a course
+    course_id = generate_id()
+    print(type(course_id))
+    course = Course(course_id=course_id, title="Test Course", description="Test Description")
+    db_conn.add_course(course)
+    print(f"Added course: {course.to_dict()}")
 
-    # # Retrieve and verify the added course
-    # retrieved_course = db_conn.get_course_by_id(course_id)
-    # print(f"Retrieved course: {retrieved_course}")
-    # assert retrieved_course.title == "Test Course", "Course retrieval failed."
+    # Retrieve and verify the added course
+    retrieved_course = db_conn.get_course_by_id(course_id)
+    print(f"Retrieved course: {retrieved_course}")
+    assert retrieved_course.title == "Test Course", "Course retrieval failed."
 
-    # # Update the course
-    # course.title = "Updated Course Name"
-    # db_conn.update_course_by_id(course_id, course)
-    # updated_course = db_conn.get_course_by_id(course_id)
-    # print(f"Updated course: {updated_course}")
-    # assert updated_course.title == "Updated Course Name", "Course update failed."
+    # Update the course
+    course.title = "Updated Course Name"
+    db_conn.update_course_by_id(course_id, course)
+    updated_course = db_conn.get_course_by_id(course_id)
+    print(f"Updated course: {updated_course}")
+    assert updated_course.title == "Updated Course Name", "Course update failed."
 
     # # Remove the course
     # db_conn.remove_course_by_id(course_id)

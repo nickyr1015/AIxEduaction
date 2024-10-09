@@ -9,10 +9,10 @@ from entity.chapter import Chapter
 from entity.section import Section
 from entity.textbook import Textbook
 from util.generate_id import generate_id
-from backend.model.manager.course_manager import CourseManager
-from backend.model.manager.textbook_manager import TextbookManager
-from backend.model.manager.chapter_manager import ChapterManager
-from backend.model.manager.section_manager import SectionManager
+from model.manager.course_manager import CourseManager
+from model.manager.textbook_manager import TextbookManager
+from model.manager.chapter_manager import ChapterManager
+from model.manager.section_manager import SectionManager
 
 class DatabaseConnection:
     def __init__(self):
@@ -110,15 +110,15 @@ class DatabaseConnection:
 
     def get_textbook_all_by_id(self, course_id):
         """Retrieve all textbooks for a specific course_id as a list of Textbook objects."""
-        return self.textbook_manager.get_textbook_all_by_course_id(course_id)
+        return self.textbook_manager.get_textbook_all_by_id(course_id)
 
     def get_textbook_all(self):
         """Retrieve all textbooks from the CSV file as a list of dictionaries."""
         return self.textbook_manager.get_textbook_all()
 
-    def get_textbook_id_all_by_course_id(self, course_id):
+    def get_textbook_id_all_by_id(self, course_id):
         """Retrieve all textbook IDs for a specific course_id."""
-        return self.textbook_manager.get_textbook_id_all_by_course_id(course_id)
+        return self.textbook_manager.get_textbook_id_all_by_id(course_id)
 
     def add_textbook(self, textbook):
         """Add a textbook to the DataFrame and save to the CSV file if it does not already exist."""
@@ -179,13 +179,13 @@ class DatabaseConnection:
         """Delegate retrieval of a chapter by its course_id, textbook_id, and chapter_id to the chapter manager."""
         return self.chapter_manager.get_chapter_by_id(course_id, textbook_id, chapter_id)
 
-    def get_chapter_all_by_course_textbook_id(self, course_id, textbook_id):
+    def get_chapter_all_by_id(self, course_id, textbook_id):
         """Delegate retrieval of all chapters by course_id and textbook_id to the chapter manager."""
-        return self.chapter_manager.get_chapter_all_by_course_textbook_id(course_id, textbook_id)
+        return self.chapter_manager.get_chapter_all_by_id(course_id, textbook_id)
 
-    def get_chapter_id_all(self):
+    def get_chapter_id_all_by_id(self, course_id, textbook_id):
         """Delegate retrieval of all chapter IDs to the chapter manager."""
-        return self.chapter_manager.get_chapter_id_all()
+        return self.chapter_manager.get_chapter_id_all_by_id(course_id, textbook_id)
 
     def add_chapter(self, chapter):
         """Delegate adding a chapter to the chapter manager."""

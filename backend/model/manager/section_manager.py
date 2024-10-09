@@ -122,6 +122,52 @@ class SectionManager:
         self.save_section(df)
         print(f"Section with ID {section.section_id} added successfully.")
         return True
+    
+    def add_section_list(self, section_list):
+        """Add multiple sections to the DataFrame and save to the CSV file if they do not already exist."""
+        df = self.load_section()
+
+        if df.empty:
+            df = pd.DataFrame(columns=['course_id', 'textbook_id', 'chapter_id', 'section_id', 'number', 'title', 'concept', 'description', 'example'])
+
+        sections_added = 0
+        for section in section_list:
+            # Check if the section already exists
+            if df[
+                (df['course_id'] == section.course_id) &
+                (df['textbook_id'] == section.textbook_id) &
+                (df['chapter_id'] == section.chapter_id) &
+                (df['section_id'] == section.section_id)
+            ].any(axis=None):
+                print(f"Section with ID {section.section_id} already exists. Skipping.")
+                continue
+
+            # Create a new DataFrame for the new section
+            new_section_row = pd.DataFrame({
+                'course_id': [section.course_id],
+                'textbook_id': [section.textbook_id],
+                'chapter_id': [section.chapter_id],
+                'section_id': [section.section_id],
+                'number': [section.number],
+                'title': [section.title],
+                'concept': [section.concept],
+                'description': [section.description],
+                'example': [section.example]
+            })
+
+            # Append the new section to the existing DataFrame
+            df = pd.concat([df, new_section_row], ignore_index=True)
+            sections_added += 1
+
+        if sections_added > 0:
+            # Save the updated DataFrame back to the CSV only if new sections were added
+            self.save_section(df)
+            print(f"{sections_added} sections added successfully.")
+        else:
+            print("No new sections were added as they already exist.")
+
+        return sections_added > 0
+
 
     def update_section_by_id(self, course_id, textbook_id, chapter_id, section_id, section):
         """Update a section's details by its course_id, textbook_id, chapter_id, and section_id."""
